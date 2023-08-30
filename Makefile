@@ -25,4 +25,7 @@ sqlcdocker:
 test:
 	go test -v -cover ./...
 
-.PHONY: postgres createdb dropdb migratedown migrateup sqlc
+server:
+	go run main.go
+
+.PHONY: postgres createdb dropdb migratedown migrateup sqlc server
