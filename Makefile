@@ -25,7 +25,14 @@ sqlcdocker:
 test:
 	go test -v -cover ./...
 
+testcoverage:
+	go test -v -cover -coverprofile=testcoverage.out ./...
+	go tool cover -html=testcoverage.out
+
 server:
 	go run main.go
 
-.PHONY: postgres createdb dropdb migratedown migrateup sqlc server
+mock:
+	mockgen -destination=db/mock/store.go -package=mockdb github.com/achal1304/simple_bank/db/sqlc Store	
+
+.PHONY: postgres createdb dropdb migratedown migrateup sqlc server mock testcoverage
