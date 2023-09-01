@@ -13,8 +13,14 @@ simple_bank:
 migrateup:
 	migrate -path db/migration -database postgresql://achal123:pa55word@localhost:5433/simple_bank?sslmode=disable up
 
+migrateup1:
+	migrate -path db/migration -database postgresql://achal123:pa55word@localhost:5433/simple_bank?sslmode=disable up 1
+
 migratedown:
 	migrate -path db/migration -database postgresql://achal123:pa55word@localhost:5433/simple_bank?sslmode=disable down
+
+migratedown1:
+	migrate -path db/migration -database postgresql://achal123:pa55word@localhost:5433/simple_bank?sslmode=disable down 1
 
 sqlc:
 	sqlc generate
@@ -35,4 +41,4 @@ server:
 mock:
 	mockgen -destination=db/mock/store.go -package=mockdb github.com/achal1304/simple_bank/db/sqlc Store	
 
-.PHONY: postgres createdb dropdb migratedown migrateup sqlc server mock testcoverage
+.PHONY: postgres createdb dropdb migratedown migrateup sqlc server mock testcoverage migratedown1 migrateup1
