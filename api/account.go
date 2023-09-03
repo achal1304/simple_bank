@@ -72,6 +72,7 @@ func (server *Server) getAccount(ctx *gin.Context) {
 	if account.Owner != authPayload.Username {
 		err := errors.New("accoutn doesn't below to the authenticated user")
 		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
+		return
 	}
 	ctx.JSON(http.StatusOK, account)
 }
@@ -88,8 +89,10 @@ func (server *Server) listAccounts(ctx *gin.Context) {
 		return
 	}
 
+	authPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
+
 	args := db.ListAccountsParams{
-		Owner:  "Achal agrawal",
+		Owner:  authPayload.Username,
 		Limit:  req.PageSize,
 		Offset: (req.PageID - 1) * req.PageSize,
 	}
