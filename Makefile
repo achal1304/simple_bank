@@ -1,3 +1,5 @@
+DB_URL= postgresql://achal123:pa55word@localhost:5433/simple_bank?sslmode=disable
+
 postgres:
 	docker run --name postgres12 --network bank-network -p 5433:5432 -e POSTGRES_USER=achal123 -e POSTGRES_PASSWORD=pa55word -d postgres:12-alpine
 
@@ -11,16 +13,16 @@ simple_bank:
 	docker exec -it postgres12 psql -U achal123 simple_bank
 
 migrateup:
-	migrate -path db/migration -database postgresql://achal123:pa55word@localhost:5433/simple_bank?sslmode=disable up
+	migrate -path db/migration -database "$(DB_URL)" up
 
 migrateup1:
-	migrate -path db/migration -database postgresql://achal123:pa55word@localhost:5433/simple_bank?sslmode=disable up 1
+	migrate -path db/migration -database "$(DB_URL)" up 1
 
 migratedown:
-	migrate -path db/migration -database postgresql://achal123:pa55word@localhost:5433/simple_bank?sslmode=disable down
+	migrate -path db/migration -database "$(DB_URL)" down
 
 migratedown1:
-	migrate -path db/migration -database postgresql://achal123:pa55word@localhost:5433/simple_bank?sslmode=disable down 1
+	migrate -path db/migration -database "$(DB_URL)" down 1
 
 sqlc:
 	sqlc generate
