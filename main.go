@@ -12,6 +12,9 @@ import (
 	"github.com/achal1304/simple_bank/gapi"
 	"github.com/achal1304/simple_bank/pb"
 	"github.com/achal1304/simple_bank/util"
+	"github.com/golang-migrate/migrate/v4"
+	_ "github.com/golang-migrate/migrate/v4/database/postgres"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	_ "github.com/lib/pq"
 	"google.golang.org/grpc"
@@ -28,10 +31,24 @@ func main() {
 	if err != nil {
 		log.Fatal("Cannot connect to db", err)
 	}
+	runDBMigration(config.MigrationURL, config.DBsoruce)
 	store := db.NewStore(conn)
 
 	go runGatewayServer(config, store)
 	rungRPCServer(config, store)
+}
+
+func runDBMigration(migrationURL string, dbSource string) {
+	migration, err := migrate.New(migrationURL, dbSource)
+	if err != nil {
+		log.Fatal("cannot create new migrate instance")
+	}
+
+	if err = migration.Up(); err != nil && err != migrate.ErrNoChange {
+		log.Fatal("failed to run migrate up")
+	}
+
+	log.Print("db migrated successfully")
 }
 
 func rungRPCServer(config util.Config, store db.Store) {
